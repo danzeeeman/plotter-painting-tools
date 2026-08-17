@@ -472,10 +472,32 @@ kbd {
   font-weight: 600;
 }
 
-/* a couple of outputs are naturally very sparse/dark (e.g. light stippling) —
-   boost them for legibility as a thumbnail without misrepresenting the algorithm */
-.example-card img.boost {
-  filter: brightness(2.4) contrast(1.15);
+.example-source img,
+.example-card img {
+  cursor: zoom-in;
+}
+
+/* ---- lightbox ---- */
+
+.lightbox {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  background: rgba(6, 7, 6, 0.92);
+  padding: 5vh 5vw;
+  align-items: center;
+  justify-content: center;
+  cursor: zoom-out;
+}
+
+.lightbox.open { display: flex; }
+
+.lightbox img {
+  max-width: 100%;
+  max-height: 90vh;
+  border-radius: 8px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
 }
 
 /* ---- pipeline steps ---- */

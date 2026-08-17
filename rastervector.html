@@ -117,7 +117,7 @@
   <p><strong>Edges only, no fill:</strong> use type 6 (Edge) on its own.</p>
 
   <h2 id="examples">Examples</h2>
-  <p>All of the examples below are the same source image, run through RasterVector's own splash/poster art at default-ish settings for each type — no cherry-picked photos, just one image through eleven different algorithms.</p>
+  <p>All of the examples below are the same source image, run through RasterVector's own splash/poster art at default-ish settings for each type — no cherry-picked photos, just one image through eleven different algorithms. Click any image to view it larger.</p>
 
   <div class="example-source">
     <img src="assets/img/examples/source.webp" alt="The full-color source poster image used for every example below.">
@@ -146,7 +146,7 @@
       <div class="cap"><span class="num">9</span><span class="name">Isophotes</span></div>
     </div>
     <div class="example-card">
-      <img class="boost" src="assets/img/examples/stippling.webp" alt="Stippling example output">
+      <img src="assets/img/examples/stippling.webp" alt="Stippling example output">
       <div class="cap"><span class="num">10</span><span class="name">Stippling</span></div>
     </div>
     <div class="example-card">
@@ -571,5 +571,31 @@
   </div>
 </footer>
 
+<div class="lightbox" id="lightbox">
+  <img id="lightbox-img" src="" alt="">
+</div>
+<script>
+  (function () {
+    var lightbox = document.getElementById('lightbox');
+    var lightboxImg = document.getElementById('lightbox-img');
+    document.querySelectorAll('.example-source img, .example-card img').forEach(function (img) {
+      img.addEventListener('click', function () {
+        lightboxImg.src = img.src;
+        lightboxImg.alt = img.alt;
+        lightbox.classList.add('open');
+      });
+    });
+    lightbox.addEventListener('click', function () {
+      lightbox.classList.remove('open');
+      lightboxImg.src = '';
+    });
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape') {
+        lightbox.classList.remove('open');
+        lightboxImg.src = '';
+      }
+    });
+  })();
+</script>
 </body>
 </html>
