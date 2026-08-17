@@ -1,0 +1,159 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>paintMixer — Plotter Painting Tools</title>
+<meta name="description" content="paintMixer extracts a color palette from an image or SVG and works out how to mix it from real watercolors, acrylics, or markers.">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+
+<nav class="site-nav">
+  <div class="wrap">
+    <div class="brand"><a href="index.html" style="color:inherit">plotter<span>/</span>painting<span>/</span>tools</a></div>
+    <div class="links">
+      <a href="rastervector.html">RasterVector</a>
+      <a href="paintmixer.html" class="current">paintMixer</a>
+    </div>
+  </div>
+</nav>
+
+<header class="hero">
+  <p class="eyebrow">Image → paint recipe</p>
+  <h1>paintMixer</h1>
+  <p class="lede">Drop in an image or an SVG, get back the colors that make it up — then get back a real recipe for mixing each one from an actual set of paints, ready to print and take to the palette.</p>
+  <div class="hero-actions">
+    <a class="btn btn-primary" href="#workflow">See the workflow</a>
+    <a class="btn btn-ghost" href="#palettes">Browse built-in palettes</a>
+  </div>
+</header>
+
+<div class="banner">
+  <div class="palette-grid">
+    <div class="palette-chip"><div class="bar">
+      <span style="background:#f5d020"></span><span style="background:#e8547a"></span><span style="background:#2f3f8f"></span><span style="background:#0d3b6e"></span><span style="background:#0d6b5e"></span><span style="background:#8b3a1e"></span>
+    </div><div class="label">Daniel Smith Essential (6)</div></div>
+    <div class="palette-chip"><div class="bar">
+      <span style="background:#ffffff"></span><span style="background:#191614"></span><span style="background:#fffa64"></span><span style="background:#ffc800"></span><span style="background:#ff6e00"></span><span style="background:#dc1e14"></span><span style="background:#8c0032"></span><span style="background:#8a360f"></span><span style="background:#c8a032"></span><span style="background:#0f1ea5"></span><span style="background:#004ba8"></span><span style="background:#00805a"></span>
+    </div><div class="label">Traditional Artist (12)</div></div>
+  </div>
+</div>
+
+<main class="content">
+
+  <h2 id="overview">Overview</h2>
+  <p class="lead">paintMixer takes any image or SVG, clusters it down to its dominant colors, and then solves — for a chosen physical paint set — the closest mixing recipe for each one: which two, three, or four paints to combine and in what ratio. The output is a step-by-step recipe you can actually mix at a palette, plus a rewritten SVG or remapped image so you can preview the piece in the colors you'll actually be able to make.</p>
+
+  <div class="callout"><strong>About this page</strong> — paintMixer is a personal tool and its source isn't published. This page documents what it does and how it's used, not how to build it.</div>
+
+  <h2 id="workflow">Workflow</h2>
+  <div class="pipeline">
+    <div class="step">
+      <h4>Open</h4>
+      <p>Load an image or an SVG file (<kbd>O</kbd>, or drag onto the window).</p>
+    </div>
+    <div class="step">
+      <h4>Extract</h4>
+      <p>Cluster the file down to its dominant colors — k-means in CIELAB space, or every exact color from an SVG's fills/strokes.</p>
+    </div>
+    <div class="step">
+      <h4>Adjust</h4>
+      <p>Nudge brightness, contrast, hue, and saturation globally or per extracted color before mixing.</p>
+    </div>
+    <div class="step">
+      <h4>Mix</h4>
+      <p>Pick a physical palette — built-in or your own — and get a weighted recipe for each extracted color.</p>
+    </div>
+    <div class="step">
+      <h4>Export</h4>
+      <p>Recipe PDF, Bantam Tools toolset JSON, a palette-remapped SVG or PNG, or all of it at once.</p>
+    </div>
+  </div>
+
+  <h2 id="extraction">Color extraction</h2>
+  <p><strong>From an image:</strong> pixels are sampled (up to 50,000), converted to linear RGB, and clustered with k-means (sorted by luminance first, for tonal-band initialization; up to 40 iterations). A <strong>merge delta</strong> slider then greedily folds together any two resulting colors closer than that sRGB distance, so near-duplicates collapse into one swatch. <strong>Max colors</strong> (4–64) and <strong>iterations</strong> (1–64) are adjustable before extraction.</p>
+  <p><strong>From an SVG:</strong> fill/stroke colors are parsed straight out of the XML — no geometry tessellation needed — and clustered the same way, unless <strong>"Every color (no clustering)"</strong> is on, which returns every unique color used with no reduction.</p>
+  <p>A <strong>grayscale palette</strong> toggle strips hue entirely, useful for value studies or ink work.</p>
+
+  <h3>Global &amp; per-color adjustment</h3>
+  <p>Before extraction, global sliders shift the whole source: <strong>brightness</strong>, <strong>contrast</strong>, <strong>hue</strong>, and <strong>saturation</strong> (×). After extraction, each individual swatch can be nudged the same way — hue, saturation ×, brightness × — with a one-click reset per color, so you can correct a single mis-clustered color without redoing the whole extraction.</p>
+
+  <h2 id="palettes">Built-in palettes</h2>
+  <p>Fourteen physical palettes are built in, spanning watercolor, acrylic, marker, colored pencil, pastel, and paint-pen sets — or load your own.</p>
+
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>Palette</th><th>Colors</th><th>Medium</th></tr></thead>
+      <tbody>
+        <tr><td class="key">Traditional Artist</td><td>12</td><td>Watercolor</td></tr>
+        <tr><td class="key">Daniel Smith Essential</td><td>6</td><td>Watercolor</td></tr>
+        <tr><td class="key">W&amp;N Cotman</td><td>10</td><td>Watercolor</td></tr>
+        <tr><td class="key">W&amp;N Cotman</td><td>12</td><td>Watercolor</td></tr>
+        <tr><td class="key">W&amp;N Professional WC</td><td>24</td><td>Watercolor</td></tr>
+        <tr><td class="key">MEEDEN 48-Color</td><td>48</td><td>Watercolor</td></tr>
+        <tr><td class="key">MEEDEN Acrylic 100</td><td>100</td><td>Acrylic</td></tr>
+        <tr><td class="key">MEEDEN Acrylic 1L</td><td>12</td><td>Acrylic</td></tr>
+        <tr><td class="key">Crayola</td><td>24</td><td>Wax crayon</td></tr>
+        <tr><td class="key">Copic Sketch</td><td>24</td><td>Alcohol marker</td></tr>
+        <tr><td class="key">Pastel Soft</td><td>12</td><td>Soft pastel</td></tr>
+        <tr><td class="key">Skin Tones</td><td>16</td><td>Mixed</td></tr>
+        <tr><td class="key">Staedtler Triplus</td><td>20</td><td>Fineliner</td></tr>
+        <tr><td class="key">Overseas 84 Color Paint Pens</td><td>84</td><td>Paint pen</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>Custom palettes</h3>
+  <p>Load a palette from a file, or build one by hand: <strong>Load file...</strong> reads a swatch list, <strong>Add</strong> appends a color, <strong>Clear all</strong> starts over. Useful for matching a specific paint set you own rather than a generic one.</p>
+
+  <h2 id="recipes">Mixing recipes</h2>
+  <p>For each extracted color, paintMixer tries every combination of 2, 3, and 4 colors from the active palette and keeps whichever combination — and ratio — comes closest in linear RGB (L2 distance). The result is a <strong>MixingRecipe</strong>: a target color, the blended result the recipe actually produces, and a list of components sorted by weight (e.g. <em>"Start with 60% Cadmium Yellow, add 25% Burnt Sienna, add a touch of Ivory Black (15%)"</em>).</p>
+
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>Match quality</th><th>Linear-RGB error</th></tr></thead>
+      <tbody>
+        <tr><td class="key">Excellent</td><td>&lt; 0.05</td></tr>
+        <tr><td class="key">Good</td><td>&lt; 0.12</td></tr>
+        <tr><td class="key">Fair</td><td>&lt; 0.22</td></tr>
+        <tr><td class="key">Approximate</td><td>≥ 0.22 — closest match, not exact</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p>A <strong>batch size</strong> slider (5–200 g) scales every recipe's percentages up to an actual quantity to mix, and <strong>nearest palette color</strong> lookup finds the single closest swatch when you just want a quick match instead of a blend.</p>
+
+  <h2 id="export">Export</h2>
+  <div class="tbl-wrap">
+    <table>
+      <tbody>
+        <tr><td class="key">Export All</td><td>Everything below, in one pass</td></tr>
+        <tr><td class="key">Export Recipe PDF</td><td>Printable step-by-step mixing card for every extracted color</td></tr>
+        <tr><td class="key">Export to Bantam Tools</td><td>A JSON "toolset" of the resolved colors, for the Bantam Tools pipeline (auto-splits sets over 32 colors)</td></tr>
+        <tr><td class="key">Rewrite SVG to palette</td><td>Replaces every fill/stroke in the source SVG with its nearest palette color and writes a new file</td></tr>
+        <tr><td class="key">Save PNG / Save Grayscale</td><td>Remapped raster preview in the resolved palette, in color or grayscale</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2 id="keyboard">Keyboard</h2>
+  <div class="tbl-wrap">
+    <table>
+      <tbody>
+        <tr><td class="key"><kbd>O</kbd></td><td>Open an image or SVG file</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <span>MIT licensed · built with <a href="https://openframeworks.cc/" target="_blank" rel="noopener">openFrameworks</a></span>
+    <a href="index.html">← All tools</a>
+  </div>
+</footer>
+
+</body>
+</html>

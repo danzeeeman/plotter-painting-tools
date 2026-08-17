@@ -1,0 +1,373 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>RasterVector — Plotter Painting Tools</title>
+<meta name="description" content="RasterVector turns photos into vector line drawings — spirals, cross-hatch, streamlines, edge contours, stippling, isophotes — for pen plotters, CNC, and print.">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+
+<nav class="site-nav">
+  <div class="wrap">
+    <div class="brand"><a href="index.html" style="color:inherit">plotter<span>/</span>painting<span>/</span>tools</a></div>
+    <div class="links">
+      <a href="rastervector.html" class="current">RasterVector</a>
+      <a href="paintmixer.html">paintMixer</a>
+    </div>
+  </div>
+</nav>
+
+<header class="hero">
+  <p class="eyebrow">Image → line drawing</p>
+  <h1>RasterVector</h1>
+  <p class="lede">Load a photo, pick a drawing style, tweak until it looks right, export as a path a machine — or a hand — can draw. Built for the Bantam Tools Watercolor Bot, useful for any pen plotter, CNC, or print pipeline.</p>
+  <div class="hero-actions">
+    <a class="btn btn-primary" href="#workflow">See the workflow</a>
+    <a class="btn btn-ghost" href="#types">Browse drawing types</a>
+  </div>
+</header>
+
+<figure class="banner">
+  <img src="assets/img/rastervector-hero.webp" alt="RasterVector spiral-mode line drawing rendered from a source photo, drawn as one continuous concentric spiral with wavy amplitude following image luminance.">
+  <figcaption>Spiral mode (PFM type 0) — one continuous line from the image center out, amplitude modulated by luminance.</figcaption>
+</figure>
+
+<main class="content">
+
+  <h2 id="overview">Overview</h2>
+  <p class="lead">RasterVector is a desktop app (openFrameworks / C++) that converts a raster image into vector line art, using one of twenty procedural drawing algorithms — from simple scanline patterns to edge-tangent-flow streamlines and adaptive quadtree patch layouts. The result is a set of paths, not pixels, so it can be sent straight to a plotter, a laser, or a CNC, or dropped into a print layout as clean vector work.</p>
+  <p>It was built around the <strong>Bantam Tools Watercolor Bot</strong>, so export, palette handling, and physical scaling (9×12&Prime; at 320 DPI) are tuned for that workflow, but the SVG / GCode / EPS output works with any pen plotter or vector pipeline.</p>
+
+  <div class="callout"><strong>About this page</strong> — RasterVector is a personal tool and its source isn't published. This page documents what it does and how it's used, not how to build it.</div>
+
+  <h2 id="workflow">Workflow</h2>
+  <div class="pipeline">
+    <div class="step">
+      <h4>Load</h4>
+      <p>Drop in an image, or load an existing SVG to keep editing a vector drawing already in progress.</p>
+    </div>
+    <div class="step">
+      <h4>Choose a type</h4>
+      <p>Pick one of 20 drawing algorithms (PFM 0–19) — spiral, hatch, streamlines, edge contours, stippling, sparse patch, and more.</p>
+    </div>
+    <div class="step">
+      <h4>Regenerate</h4>
+      <p>Generate the line drawing from the current image and parameters. Runs async — stop mid-generation, tweak, and re-run.</p>
+    </div>
+    <div class="step">
+      <h4>Post-process</h4>
+      <p>Fill shapes, scale to physical size, add brush outlines, thin dense strokes, simplify and clean up paths.</p>
+    </div>
+    <div class="step">
+      <h4>Export</h4>
+      <p>Batch export to SVG, GCode, PNG, and EPS in one go — only the palette colors you've left enabled are included.</p>
+    </div>
+  </div>
+
+  <h2 id="types">Drawing types</h2>
+  <p>Twenty procedural approaches to turning an image into lines, grouped roughly from geometric to structure-aware. Streamline and edge-contour types use an <strong>edge tangent field</strong> (Sobel or ETF) to follow the grain of the image rather than a fixed grid.</p>
+
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>PFM</th><th>Type</th><th>What it does</th></tr></thead>
+      <tbody>
+        <tr><td>0</td><td>Spiral</td><td>Single spiral from the centre, amplitude follows luminance</td></tr>
+        <tr><td>1</td><td>Horizontal lines</td><td>Wavy horizontal scanlines</td></tr>
+        <tr><td>2</td><td>Concentric circles</td><td>Rings from a centre point</td></tr>
+        <tr><td>3</td><td>Vertical lines</td><td>Wavy vertical lines</td></tr>
+        <tr><td>4</td><td>Cross-hatch</td><td>Two diagonal line families</td></tr>
+        <tr><td>5</td><td>Sketch lines</td><td>Short strokes that follow luminance and edges</td></tr>
+        <tr><td>6</td><td>Streamlines</td><td>Flow lines parallel to image edges</td></tr>
+        <tr><td>7</td><td>Sketch + flow outlines</td><td>Sketch style with flow-based outlines</td></tr>
+        <tr><td>8</td><td>Edge contours</td><td>Open contour lines along edges only — no fill</td></tr>
+        <tr><td>9</td><td>Outline and fill</td><td>Edge contours, then streamline fill</td></tr>
+        <tr><td>10</td><td>Sketch and edge</td><td>Sketch fill, then edge contour outlines</td></tr>
+        <tr><td>11</td><td>Isophotes</td><td>Contours of constant luminance — like a topo map</td></tr>
+        <tr><td>12</td><td>Stippling</td><td>Dot distribution by luminance</td></tr>
+        <tr><td>13</td><td>Stippling and edge</td><td>Stippling, then edge contours</td></tr>
+        <tr><td>14</td><td>Sketch curves</td><td>Curve-based sketch style</td></tr>
+        <tr><td>16</td><td>Sparse Patch</td><td>Adaptive quadtree — small rects tile edges, large rects fill flat areas, then traced into curves</td></tr>
+        <tr><td>17</td><td>Sparse Patch Diagonal</td><td>Sparse Patch with a diagonal stroke through each leaf rectangle</td></tr>
+        <tr><td>18</td><td>Sparse Patch Box Diagonal</td><td>Sparse Patch with a box-diagonal stroke through each leaf rectangle</td></tr>
+        <tr><td>19</td><td>Sparse Patch Gradient Hatch</td><td>Quadtree leaves filled with gradient-aligned hatching, spacing keyed to brightness</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p><strong>Edges only, no fill:</strong> use type 8 (Edge contours) on its own.</p>
+
+  <h2 id="params">Parameters by type</h2>
+  <p>Which panels are visible depends on the active type. Expand a type below for its full parameter list.</p>
+
+  <details class="type-ref">
+    <summary><span class="num">0</span><span class="name">Spiral</span><span class="panelname">Spiral</span></summary>
+    <div class="body tbl-wrap"><table>
+      <tbody>
+        <tr><td class="key">ring spacing</td><td>Distance between successive turns (px) — smaller = denser</td></tr>
+        <tr><td class="key">centre X / Y</td><td>Spiral centre, 0–1 of image width/height</td></tr>
+        <tr><td class="key">amplitude</td><td>Waviness perpendicular to the spiral; 0 = straight</td></tr>
+        <tr><td class="key">min / max velocity</td><td>Bounds for point spacing along the spiral</td></tr>
+      </tbody>
+    </table></div>
+  </details>
+
+  <details class="type-ref">
+    <summary><span class="num">1</span><span class="name">Horizontal lines</span><span class="panelname">H lines</span></summary>
+    <div class="body tbl-wrap"><table>
+      <tbody>
+        <tr><td class="key">line spacing</td><td>Vertical distance between scanlines (px)</td></tr>
+        <tr><td class="key">amplitude</td><td>Side-to-side waviness of each line</td></tr>
+        <tr><td class="key">segments/pixel</td><td>Segments per pixel — higher = smoother</td></tr>
+      </tbody>
+    </table></div>
+  </details>
+
+  <details class="type-ref">
+    <summary><span class="num">2</span><span class="name">Concentric circles</span><span class="panelname">Circles</span></summary>
+    <div class="body tbl-wrap"><table>
+      <tbody>
+        <tr><td class="key">ring spacing</td><td>Radial distance between circles (px)</td></tr>
+        <tr><td class="key">centre X / Y</td><td>Centre of the rings, 0–1</td></tr>
+        <tr><td class="key">amplitude</td><td>Radial waviness of each ring</td></tr>
+        <tr><td class="key">seg/degree</td><td>Segments per degree — higher = smoother rings</td></tr>
+      </tbody>
+    </table></div>
+  </details>
+
+  <details class="type-ref">
+    <summary><span class="num">3</span><span class="name">Vertical lines</span><span class="panelname">V lines</span></summary>
+    <div class="body tbl-wrap"><table>
+      <tbody>
+        <tr><td class="key">line spacing</td><td>Horizontal distance between lines</td></tr>
+        <tr><td class="key">amplitude</td><td>Up–down waviness of each line</td></tr>
+        <tr><td class="key">segments/pixel</td><td>Segments per pixel along the line</td></tr>
+      </tbody>
+    </table></div>
+  </details>
+
+  <details class="type-ref">
+    <summary><span class="num">4</span><span class="name">Cross-hatch</span><span class="panelname">Hatch</span></summary>
+    <div class="body tbl-wrap"><table>
+      <tbody>
+        <tr><td class="key">line spacing</td><td>Spacing between parallel lines in each family</td></tr>
+        <tr><td class="key">amplitude</td><td>Waviness of the hatch lines</td></tr>
+        <tr><td class="key">angle °</td><td>Angle of the first family; second is perpendicular</td></tr>
+        <tr><td class="key">segments/pixel</td><td>Segments per pixel along each line</td></tr>
+      </tbody>
+    </table></div>
+  </details>
+
+  <details class="type-ref">
+    <summary><span class="num">5</span><span class="name">Sketch lines</span><span class="panelname">Sketch, Style</span></summary>
+    <div class="body tbl-wrap"><table>
+      <tbody>
+        <tr><td class="key">min / max line len</td><td>Stroke length range (px)</td></tr>
+        <tr><td class="key">line tests</td><td>Candidate directions tested per stroke start</td></tr>
+        <tr><td class="key">angle min / max</td><td>Range of starting angles (°)</td></tr>
+        <tr><td class="key">delta angle</td><td>Angular step between tests</td></tr>
+        <tr><td class="key">erase lum</td><td>Luminance above which pixels are treated as already-drawn</td></tr>
+        <tr><td class="key">max lines</td><td>Stops generating once reached</td></tr>
+        <tr><td class="key">block size</td><td>Sampling block size (px)</td></tr>
+        <tr><td class="key">fill white</td><td>0 = shade dark only, 1 = shade light only, 0.5 = both</td></tr>
+        <tr><td class="key">follow edges</td><td>0 = ignore edges, 1 = strongly follow them</td></tr>
+        <tr><td class="key">H+V only</td><td>Restrict to horizontal/vertical strokes (boxy look)</td></tr>
+        <tr><td class="key">avoid overlap</td><td>Preference for strokes through less-drawn pixels</td></tr>
+      </tbody>
+    </table>
+    <p>Also uses the shared <a href="#style-panel">Style panel</a>.</p>
+    </div>
+  </details>
+
+  <details class="type-ref">
+    <summary><span class="num">6</span><span class="name">Streamlines</span><span class="panelname">Streamlines, Style</span></summary>
+    <div class="body tbl-wrap"><table>
+      <tbody>
+        <tr><td class="key">par step</td><td>Integration step size along the edge flow</td></tr>
+        <tr><td class="key">par max len</td><td>Max streamline length (points)</td></tr>
+        <tr><td class="key">par seed</td><td>Spacing between seed points</td></tr>
+        <tr><td class="key">smooth r / passes</td><td>Radius and pass count for smoothing the flow field</td></tr>
+        <tr><td class="key">min mag</td><td>Stop integrating below this flow magnitude</td></tr>
+        <tr><td class="key">avoid close (px)</td><td>Skip a new line if it runs too close to existing ones (0 = off)</td></tr>
+        <tr><td class="key">simplify (px)</td><td>Douglas–Peucker tolerance after each pass (0 = off)</td></tr>
+        <tr><td class="key">flow</td><td>0 = Sobel tangent, 1 = ETF (Edge Tangent Flow)</td></tr>
+        <tr><td class="key">ETF sigma</td><td>Gaussian sigma for ETF smoothing</td></tr>
+        <tr><td class="key">FDoG seeds / σ1 / σ2 / rho / %</td><td>Seed only where FDoG line strength is high, with FDoG shaping params</td></tr>
+      </tbody>
+    </table>
+    <p>Also uses the shared <a href="#style-panel">Style panel</a>.</p>
+    </div>
+  </details>
+
+  <details class="type-ref">
+    <summary><span class="num">7</span><span class="name">Sketch + flow outlines</span><span class="panelname">Sketch, Streamlines, Style</span></summary>
+    <div class="body"><p>Combines Sketch (type 5) and Streamlines (type 6) — sketch-style shading with flow-based outlines. Same parameters as both types, applied together.</p></div>
+  </details>
+
+  <details class="type-ref">
+    <summary><span class="num">8</span><span class="name">Edge contours</span><span class="panelname">Edge</span></summary>
+    <div class="body tbl-wrap"><table>
+      <tbody>
+        <tr><td class="key">step</td><td>Integration step size along the flow (px)</td></tr>
+        <tr><td class="key">max len</td><td>Max points per direction — longer = longer contours</td></tr>
+        <tr><td class="key">smooth r / passes</td><td>Smoothing radius and pass count for the edge flow field</td></tr>
+        <tr><td class="key">seed spacing</td><td>Grid spacing for seed points (px)</td></tr>
+        <tr><td class="key">edge %</td><td>Only start where edge strength ≥ this (0–100)</td></tr>
+        <tr><td class="key">bidirectional</td><td>Trace both directions from each seed and merge into one path</td></tr>
+        <tr><td class="key">min mag</td><td>Stop when flow magnitude drops below this</td></tr>
+        <tr><td class="key">avoid close (px)</td><td>Skip a contour that overlaps already-drawn paths too much</td></tr>
+        <tr><td class="key">min vert (px)</td><td>Minimum distance between consecutive vertices — reduces jitter</td></tr>
+        <tr><td class="key">simplify (px)</td><td>Douglas–Peucker tolerance after tracing (0 = off, keeps smooth contours)</td></tr>
+        <tr><td class="key">outline offset (px)</td><td>Adds a second path offset to the left of each contour</td></tr>
+        <tr><td class="key">outline length / start</td><td>Length and start position of that offset segment, as a fraction of the path</td></tr>
+        <tr><td class="key">outline only (remove OG)</td><td>Draw only the offset path, not the original contour</td></tr>
+        <tr><td class="key">add outline paths / add inset paths</td><td>Toggles for whether offset/inset paths are ever added</td></tr>
+        <tr><td class="key">random main or outline</td><td>Randomly draw main-only or outline-only per contour (50/50)</td></tr>
+        <tr><td class="key">inset (px)</td><td>Adds a path offset inward by this amount</td></tr>
+        <tr><td class="key">min contour length</td><td>Skip contours with fewer vertices than this (0 = off) — reduces noise in dense texture</td></tr>
+        <tr><td class="key">overlap skip %</td><td>Skip a contour if this fraction of its vertices sit in already-occupied cells — fewer redundant traces</td></tr>
+        <tr><td class="key">seed order</td><td>0 = grid order, 1 = strongest edges first (more coherent)</td></tr>
+        <tr><td class="key">flow / ETF sigma</td><td>0 = Sobel, 1 = ETF for the edge tangent field, with smoothing sigma</td></tr>
+        <tr><td class="key">FDoG seeds / σ1 / σ2 / rho / %</td><td>Seed only where FDoG line strength clears a threshold</td></tr>
+      </tbody>
+    </table></div>
+  </details>
+
+  <details class="type-ref">
+    <summary><span class="num">9</span><span class="name">Outline and fill</span><span class="panelname">Edge, Streamlines, Style</span></summary>
+    <div class="body"><p>Runs edge contours first, then streamlines — outlines plus flow-based fill. All Edge and Streamlines parameters apply; Style applies to the streamline pass.</p></div>
+  </details>
+
+  <details class="type-ref">
+    <summary><span class="num">10</span><span class="name">Sketch and edge</span><span class="panelname">Edge, Sketch, Style</span></summary>
+    <div class="body"><p>Runs sketch shading first, then edge contours on top. Sketch, Edge, and Style parameters all apply.</p></div>
+  </details>
+
+  <details class="type-ref">
+    <summary><span class="num">11</span><span class="name">Isophotes</span><span class="panelname">Isophotes</span></summary>
+    <div class="body tbl-wrap"><table>
+      <tbody>
+        <tr><td class="key">levels</td><td>Number of luminance bands</td></tr>
+        <tr><td class="key">lum min / max</td><td>Luminance range the levels are spaced across (0–255)</td></tr>
+        <tr><td class="key">simplify (px)</td><td>Douglas–Peucker tolerance (0 = off)</td></tr>
+        <tr><td class="key">min length (px)</td><td>Drop contours shorter than this</td></tr>
+        <tr><td class="key">min apart (px)</td><td>Skip a contour if too close to an already-drawn one (0 = off)</td></tr>
+      </tbody>
+    </table></div>
+  </details>
+
+  <details class="type-ref" id="style-panel">
+    <summary><span class="num">★</span><span class="name">Style panel (shared)</span><span class="panelname">Types 5, 6, 7, 9, 10</span></summary>
+    <div class="body tbl-wrap"><table>
+      <tbody>
+        <tr><td class="key">Show original (50%)</td><td>Overlay the source image at half opacity, same pan/zoom, to compare trace to source</td></tr>
+        <tr><td class="key">Lift pen</td><td>Whether to lift the pen between strokes</td></tr>
+        <tr><td class="key">Directionality</td><td>Strength of preferred stroke direction</td></tr>
+        <tr><td class="key">Clarity</td><td>Affects stroke placement clarity</td></tr>
+        <tr><td class="key">Distortion</td><td>Amount of distortion applied</td></tr>
+        <tr><td class="key">Angularity</td><td>Angular vs. smooth preference</td></tr>
+        <tr><td class="key">Edge / Sobel / Luminance power</td><td>Relative weight of each signal in stroke placement</td></tr>
+        <tr><td class="key">Delta angle</td><td>Angular range for drawing (°)</td></tr>
+        <tr><td class="key">Seed type</td><td>0 = Sobel, 1 = Edges, 2 = Luminance</td></tr>
+        <tr><td class="key">Seed thresh</td><td>Seed threshold</td></tr>
+        <tr><td class="key">Pen</td><td>Pen index for export (multi-pen plotters)</td></tr>
+      </tbody>
+    </table></div>
+  </details>
+
+  <details class="type-ref">
+    <summary><span class="num">16</span><span class="name">Sparse Patch</span><span class="panelname">Sparse Patch</span></summary>
+    <div class="body">
+      <p>Builds an adaptive quadtree over the image: cells with high luminance variance or strong edges split further, flat cells stay large. Small leaf rectangles end up tiling the detail areas while large rectangles fill uniform ones — that structure then drives curve generation. Inspired by He et al., <em>Image vectorization using a sparse patch layout</em> (Graphical Models, 2024).</p>
+      <h3>Subdivision</h3>
+      <div class="tbl-wrap"><table><tbody>
+        <tr><td class="key">min patch size</td><td>Minimum cell size (px) — cells smaller than this never split</td></tr>
+        <tr><td class="key">max depth</td><td>Maximum split count, caps total rect count</td></tr>
+        <tr><td class="key">variance threshold</td><td>Split when luminance variance exceeds this — lower = more splits</td></tr>
+        <tr><td class="key">split on edges / edge threshold</td><td>Also split on strong Sobel gradient, above this threshold</td></tr>
+        <tr><td class="key">skip white above</td><td>Don't emit cells brighter than this (~220 skips white background)</td></tr>
+        <tr><td class="key">hatch spacing</td><td>If &gt;0, fill large rects with horizontal hatching at this spacing</td></tr>
+        <tr><td class="key">outline as single stroke</td><td>Emit each rect as one closed path, or four separate lines</td></tr>
+        <tr><td class="key">cull rects larger than (px)</td><td>Don't draw rects above this size (0 = no culling)</td></tr>
+      </tbody></table></div>
+      <h3>Curve generation</h3>
+      <div class="tbl-wrap"><table><tbody>
+        <tr><td class="key">output as gestures</td><td>Connect small rects into curves, instead of drawing outlines/hatch only</td></tr>
+        <tr><td class="key">connect centers (max size px)</td><td>Only rects at or below this size join curve generation (0 = no limit) — set roughly to 2–4× min patch size to capture just the small edge rects</td></tr>
+        <tr><td class="key">boundary trace</td><td>On: trace the outer boundary of the small-rect cluster — a clean staircase that smooths into a precise curve. Off: trace through rect interiors.</td></tr>
+        <tr><td class="key">centers only</td><td>(When boundary trace is off.) On: connect rect centers directly — one smooth medial-axis line. Off: centre→edge-midpoint→centre zigzag, more gestural.</td></tr>
+        <tr><td class="key">smoothing passes</td><td>Chaikin corner-cutting passes before curve fitting (0–6; 2–3 is usually enough)</td></tr>
+        <tr><td class="key">fit curves (Bézier)</td><td>Fit a cubic Bézier to each polyline after smoothing</td></tr>
+      </tbody></table></div>
+      <h3>Choosing a curve mode</h3>
+      <div class="tbl-wrap"><table>
+        <thead><tr><th>boundary trace</th><th>centers only</th><th>Result</th></tr></thead>
+        <tbody>
+          <tr><td>on</td><td>—</td><td>Clean contour: staircase → smooth → Bézier fit</td></tr>
+          <tr><td>off</td><td>on</td><td>Medial axis: one line through the middle of the edge-rect strip</td></tr>
+          <tr><td>off</td><td>off</td><td>Gestural zigzag through rect interiors</td></tr>
+        </tbody>
+      </table></div>
+    </div>
+  </details>
+
+  <details class="type-ref">
+    <summary><span class="num">17–18</span><span class="name">Sparse Patch Diagonal / Box Diagonal</span><span class="panelname">Sparse Patch</span></summary>
+    <div class="body"><p>Same quadtree subdivision as type 16, but instead of tracing curves, each leaf rectangle gets a single diagonal stroke (17) or a box-diagonal stroke (18). Uses the same subdivision parameters.</p></div>
+  </details>
+
+  <details class="type-ref">
+    <summary><span class="num">19</span><span class="name">Sparse Patch Gradient Hatch</span><span class="panelname">Sparse Patch</span></summary>
+    <div class="body"><p>Same quadtree subdivision, but each leaf rectangle is filled with gradient-aligned hatching: a structure tensor finds the dominant gradient direction per rect, hatch lines run perpendicular to it, and spacing varies from tight (dark) to wide (light) based on brightness sampled along each line.</p></div>
+  </details>
+
+  <h2 id="post">Post-process</h2>
+  <ul>
+    <li><strong>Fill shapes</strong> — adds horizontal hatch lines inside closed paths (no outline added; if you see straight "connector" lines, that's the fill).</li>
+    <li><strong>Scale 9×12</strong> — scales the drawing up to 9×12&Prime; at 320 DPI (2880×3840 px), so it's the right physical size for print or plotter.</li>
+    <li><strong>Add brush outlines</strong> — adds inset paths after scaling: each stroke gets a random-length segment at a random offset, sized by brush width, with controls for inset × brush, max strokes to outline, and minimum length.</li>
+    <li><strong>Thin: remove 1 out of 2–5</strong> — removes every Nth stroke to reduce density.</li>
+    <li>Plus: remove duplicates, simplify paths, combine same-color strokes, merge brush strokes.</li>
+  </ul>
+
+  <h2 id="palette-export">Palette &amp; export</h2>
+  <p>Palette panel toggles (<strong>Use 1</strong>…<strong>Use 8</strong>) hide a color from the canvas and drop it from every export — SVG, GCode, EPS, PNG, batch — no file editing required.</p>
+  <div class="tbl-wrap">
+    <table>
+      <tbody>
+        <tr><td class="key">Batch export</td><td>SVG + GCode + PNG + EPS in one go, same base path, enabled colors only</td></tr>
+        <tr><td class="key"><kbd>S</kbd></td><td>Save SVG</td></tr>
+        <tr><td class="key"><kbd>G</kbd></td><td>Save GCode</td></tr>
+        <tr><td class="key"><kbd>R</kbd></td><td>Save PNG</td></tr>
+        <tr><td class="key"><kbd>E</kbd></td><td>Save EPS</td></tr>
+        <tr><td class="key"><kbd>P</kbd> / <kbd>O</kbd></td><td>Save / open project (image + drawing + params)</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2 id="keyboard">Keyboard &amp; UI</h2>
+  <div class="tbl-wrap">
+    <table>
+      <tbody>
+        <tr><td class="key"><kbd>H</kbd></td><td>Toggle GUI panels</td></tr>
+        <tr><td class="key"><kbd>D</kbd></td><td>Reset all params to defaults</td></tr>
+        <tr><td class="key"><kbd>0</kbd></td><td>Reset view (pan/zoom)</td></tr>
+        <tr><td class="key"><kbd>U</kbd></td><td>Undo (post-process)</td></tr>
+        <tr><td class="key"><kbd>K</kbd> / <kbd>L</kbd></td><td>Save / load preset</td></tr>
+        <tr><td class="key">Drag / Scroll</td><td>Pan canvas / zoom</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <span>MIT licensed · built with <a href="https://openframeworks.cc/" target="_blank" rel="noopener">openFrameworks</a></span>
+    <a href="index.html">← All tools</a>
+  </div>
+</footer>
+
+</body>
+</html>
