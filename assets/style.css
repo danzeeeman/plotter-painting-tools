@@ -394,6 +394,90 @@ kbd {
   padding: 8px 10px;
 }
 
+/* ---- example gallery ---- */
+
+.example-source {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--bg-card);
+  padding: 16px;
+  margin: 14px 0 28px;
+}
+
+.example-source img {
+  width: 160px;
+  border-radius: 6px;
+  flex-shrink: 0;
+  display: block;
+}
+
+.example-source p {
+  margin: 0;
+  color: var(--text-dim);
+  font-size: 14.5px;
+}
+
+.example-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+  margin: 0 0 30px;
+}
+
+@media (max-width: 760px) {
+  .example-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 480px) {
+  .example-grid { grid-template-columns: 1fr; }
+}
+
+.example-card {
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  background: var(--bg-card);
+}
+
+.example-card img {
+  width: 100%;
+  display: block;
+  aspect-ratio: 3 / 4;
+  object-fit: cover;
+  object-position: top;
+}
+
+.example-card .cap {
+  padding: 10px 12px;
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+
+.example-card .cap .num {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--accent-ink);
+  background: var(--accent);
+  border-radius: 4px;
+  padding: 1px 6px;
+  font-weight: 700;
+}
+
+.example-card .cap .name {
+  font-size: 13.5px;
+  color: var(--text);
+  font-weight: 600;
+}
+
+/* a couple of outputs are naturally very sparse/dark (e.g. light stippling) —
+   boost them for legibility as a thumbnail without misrepresenting the algorithm */
+.example-card img.boost {
+  filter: brightness(2.4) contrast(1.15);
+}
+
 /* ---- pipeline steps ---- */
 
 .pipeline {

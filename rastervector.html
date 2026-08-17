@@ -24,7 +24,7 @@
   <h1>RasterVector</h1>
   <p class="lede">Load a photo, pick from 23 drawing styles, tweak until it looks right, export as a path a machine — or a hand — can draw. Built for the Bantam Tools Watercolor Bot, useful for any pen plotter, CNC, or print pipeline.</p>
   <div class="hero-actions">
-    <a class="btn btn-primary" href="#workflow">See the workflow</a>
+    <a class="btn btn-primary" href="#examples">See examples</a>
     <a class="btn btn-ghost" href="#types">Browse drawing types</a>
   </div>
 </header>
@@ -115,6 +115,63 @@
   </div>
 
   <p><strong>Edges only, no fill:</strong> use type 6 (Edge) on its own.</p>
+
+  <h2 id="examples">Examples</h2>
+  <p>All of the examples below are the same source image, run through RasterVector's own splash/poster art at default-ish settings for each type — no cherry-picked photos, just one image through eleven different algorithms.</p>
+
+  <div class="example-source">
+    <img src="assets/img/examples/source.webp" alt="The full-color source poster image used for every example below.">
+    <p>The source image every example on this page was generated from — RasterVector's own splash art, run back through itself.</p>
+  </div>
+
+  <div class="example-grid">
+    <div class="example-card">
+      <img src="assets/img/examples/h_lines.webp" alt="H lines example output">
+      <div class="cap"><span class="num">1</span><span class="name">H lines</span></div>
+    </div>
+    <div class="example-card">
+      <img src="assets/img/examples/v_lines.webp" alt="V lines example output">
+      <div class="cap"><span class="num">2</span><span class="name">V lines</span></div>
+    </div>
+    <div class="example-card">
+      <img src="assets/img/examples/edge_contours.webp" alt="Edge contours example output">
+      <div class="cap"><span class="num">6</span><span class="name">Edge</span></div>
+    </div>
+    <div class="example-card">
+      <img src="assets/img/examples/outline_fill.webp" alt="Outline and fill example output">
+      <div class="cap"><span class="num">7</span><span class="name">Outline+Fill</span></div>
+    </div>
+    <div class="example-card">
+      <img src="assets/img/examples/isophotes.webp" alt="Isophotes example output">
+      <div class="cap"><span class="num">9</span><span class="name">Isophotes</span></div>
+    </div>
+    <div class="example-card">
+      <img class="boost" src="assets/img/examples/stippling.webp" alt="Stippling example output">
+      <div class="cap"><span class="num">10</span><span class="name">Stippling</span></div>
+    </div>
+    <div class="example-card">
+      <img src="assets/img/examples/edge_stippling.webp" alt="Stippling and edge example output">
+      <div class="cap"><span class="num">11</span><span class="name">Stippling+Edge</span></div>
+    </div>
+    <div class="example-card">
+      <img src="assets/img/examples/sketch_curves.webp" alt="Sketch curves example output">
+      <div class="cap"><span class="num">12</span><span class="name">Sketch Curves</span></div>
+    </div>
+    <div class="example-card">
+      <img src="assets/img/examples/sparse_patch.webp" alt="Sparse patch hatch-fill example output">
+      <div class="cap"><span class="num">13</span><span class="name">Sparse Patch (hatch)</span></div>
+    </div>
+    <div class="example-card">
+      <img src="assets/img/examples/sparse_patch_bd.webp" alt="Sparse patch box diagonal example output">
+      <div class="cap"><span class="num">15</span><span class="name">Sparse Patch BD</span></div>
+    </div>
+    <div class="example-card">
+      <img src="assets/img/examples/gradient_hatch.webp" alt="Gradient hatch example output">
+      <div class="cap"><span class="num">16</span><span class="name">Gradient Hatch</span></div>
+    </div>
+  </div>
+
+  <p class="callout">More examples — spiral, streamlines, the sketch/curvature/calligraphic and triangulation types, Flow Fill and Flow Grid — coming as they're generated.</p>
 
   <h2 id="params">Parameters by type</h2>
   <p>Which panel(s) you see depends on the active type. Several types share a panel — noted below — and four types are combos that use two panels together. Expand a type for its full parameter list.</p>
